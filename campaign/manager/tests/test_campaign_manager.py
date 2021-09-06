@@ -125,5 +125,5 @@ class CampaignManagerTestCase(TestCase):
     def __get_verification_code(self, email, campaign_id):
         self.signer = Signer()
         code = {"email": email, "campaign_id": campaign_id}
-        return self.signer.sign(json.dumps(code))
+        return self.signer.sign_object(code)
 

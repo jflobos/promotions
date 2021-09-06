@@ -22,6 +22,6 @@ def check_repeteated_email(campaign_id, email) -> bool:
         raise RepeatedEmailError("Email already registered") 
 
 def create_verification_code(email, campaign_id) -> str:
-    code = { "email": email, "campaign_id": campaign_id }
+    data = { "email": email, "campaign_id": campaign_id }
     signer = Signer()
-    return signer.sign(json.dumps(code))
+    return signer.sign_object(data)
