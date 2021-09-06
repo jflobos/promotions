@@ -4,6 +4,8 @@ from django.db.models.fields import BigAutoField
 class Campaign(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(null=False)
+    winner = models.BigIntegerField(null=True, default=None)
+    finished = models.BooleanField(default=False, null=False)
 
 class Subscriber(models.Model):
     campaign = models.ForeignKey(Campaign, on_delete=models.CASCADE)
