@@ -1,4 +1,5 @@
-from campaign.manager.subscriber_helpers import create_verification_code, validate_subscriber
+from random import randint
+from campaign.manager.subscriber_helpers import check_campaign, create_verification_code, validate_subscriber
 from campaign.models import Campaign, Subscriber
 
 class CampaignManager:
@@ -23,4 +24,21 @@ class CampaignManager:
         subscriber.verified = True
         subscriber.save()
         return True
+
+    def finish_campaign(self, campaign_id):
+       check_campaign(campaign_id)
+       verified_subscribers = Subscriber.objects.filter(campaign_id=campaign_id, verified=True).all()
+       if len(verified_subscribers) == 0:
+           raise ValueError("Cannot finish campaign due to insuficent verified users")
+       winner = self.__get_ramdom_from_array(verified_subscribers)
+       campaign = Campaign.objects.get(pk=campaign_id)
+       campaign.winner = winner.id
+       campaign.finished = True
+       campaign.save()
+
+    def __get_ramdom_from_array(self, array):
+        index = randint(0, len(array)-1)
+        return array[index]
+
+       
 
