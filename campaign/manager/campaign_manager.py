@@ -5,23 +5,28 @@ class CampaignManager:
     """Business logic implementation"""
 
     def add_subscriber(self, campaign_id, email, subscriber_data) -> Subscriber:
-        if not self.__check_campaign(campaign_id=campaign_id):
-            raise ValueError("Invalid Campaign")
-        if not self.__check_valid_email(email=email):
-            raise ValueError("Invalid email passed")
+        self.__check_valid_inputs(campaign_id=campaign_id, email=email)
         subscriber = Subscriber.objects.create(
             campaign_id=campaign_id, 
             email=email, 
             user_data=subscriber_data
         )
         return subscriber
-    
-    def __check_campaign(self, campaign_id) -> bool:
-        return Campaign.objects.filter(id=campaign_id).exists()
 
-    def __check_valid_email(self, email) -> bool:
+    def __check_valid_inputs(self, campaign_id, email):
+        self.__check_campaign(campaign_id=campaign_id)
+        self.__check_valid_email(email=email)
+        self.__check_repeteated_email(campaign_id=campaign_id,email=email)
+    
+    def __check_campaign(self, campaign_id):
+        if not Campaign.objects.filter(id=campaign_id).exists():
+            raise ValueError("Invalid Campaign")
+
+    def __check_valid_email(self, email):
         validator = EmailValidator()
-        result = validator(email)
-        if result is None:
-            return True
-        return False
+        validator(email)
+    
+    def __check_repeteated_email(self, campaign_id, email) -> bool:
+        if Subscriber.objects.filter(campaign_id=campaign_id, email=email).exists():
+            raise ValueError("Email already registered") 
+
