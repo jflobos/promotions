@@ -1,3 +1,4 @@
+from campaign.manager.exceptions import InvalidCampaignError, RepeatedEmailError
 import json
 from django.core.signing import Signer
 from django.test import TestCase
@@ -29,7 +30,7 @@ class CampaignManagerTestCase(TestCase):
         self.assertEqual(subscriber.verification_code, self.subscriber_verification_code)
 
     def test_add_subscriber_check_campaign_exists(self):
-        with self.assertRaises(ValueError) as error:
+        with self.assertRaises(InvalidCampaignError) as error:
             self.campaign_manager.add_subscriber(300, self.subscriber_email, self.subscriber_data)
         
     def test_add_subscriber_check_valid_email(self):
@@ -44,7 +45,7 @@ class CampaignManagerTestCase(TestCase):
             email=repeteated_email, 
             subscriber_data= self.subscriber_data
         )
-        with self.assertRaises(ValueError): 
+        with self.assertRaises(RepeatedEmailError): 
             self.campaign_manager.add_subscriber(
                 campaign_id=self.campaign.id, 
                 email=repeteated_email, 

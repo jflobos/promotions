@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models.fields import BigAutoField
 
 class Campaign(models.Model):
     title = models.CharField(max_length=255)
